@@ -25,7 +25,8 @@ import com.google.firebase.database.ValueEventListener;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
-public class AttendanceActivity extends AppCompatActivity {
+
+public class QRAttendance extends AppCompatActivity {
 
     ListView lv;
     Button submit;
@@ -33,6 +34,8 @@ public class AttendanceActivity extends AppCompatActivity {
     public List<StudentInformation> stdinfo=new ArrayList<StudentInformation>();
     public HashMap<String,Integer> hp=new HashMap<String,Integer>();
 
+    Intent intent  = getIntent();
+    String roll = intent.getStringExtra("Rollnum");
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -89,7 +92,7 @@ public class AttendanceActivity extends AppCompatActivity {
         // Adding arraylist to listView
         //  MyAdapter mpa=new MyAdapter(AttendanceActivity.this,R.layout.cust_list_attendance);
         //lv.setAdapter(mpa);
-        MyBaseAdapter mba=new MyBaseAdapter(AttendanceActivity.this);
+        MyBaseAdapter mba= new MyBaseAdapter(QRAttendance.this);
         lv.setAdapter(mba);
 
         //changing attendance of database
@@ -98,7 +101,7 @@ public class AttendanceActivity extends AppCompatActivity {
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
 
                 Log.e("String is", "Hello Dude");
-                Toast.makeText(AttendanceActivity.this, "Hello Dude", Toast.LENGTH_SHORT).show();
+                Toast.makeText(QRAttendance.this, "Hello Dude", Toast.LENGTH_SHORT).show();
 
             }
         });
@@ -114,26 +117,23 @@ public class AttendanceActivity extends AppCompatActivity {
                 Log.e("Exception is",e.toString());
             }
         }
-        for(int i=0;i<siz;i++){
-
+        for(int i=0;i<siz;i++) {
 
             View newView = lv.getChildAt(i);
-
-
             String rollno = ((TextView) newView.findViewById(R.id.textView13)).getText().toString().trim();
 
+            roll = getIntent().getStringExtra("Rollnum");
+
+            Integer totalAttendance = hp.get(roll);
 
             CheckBox cb = newView.findViewById(R.id.checkBoxA);
-            Integer totalAttendance=hp.get(rollno);
-            if(cb.isChecked()){
-                hp.put(rollno,totalAttendance+1001);
-                Log.e(rollno, " is present, attendance is " + hp.get(rollno));
-            }
-            else{
-                hp.put(rollno, totalAttendance+1000);
-                Log.e(rollno," is absent");
-            }
+            if(rollno.equals(roll))
+                cb.setEnabled(false);
+            hp.put(roll, totalAttendance + 1001);
+            Log.e(roll, " is present, attendance is " + hp.get(roll));
+
         }
+
         // Entering attendance in database
         try{
             FirebaseDatabase database=FirebaseDatabase.getInstance();
@@ -171,7 +171,7 @@ public class AttendanceActivity extends AppCompatActivity {
         Toast.makeText(getApplicationContext(), "Attendance Complete", Toast.LENGTH_SHORT).show();
 
     }
-    public class MyBaseAdapter extends BaseAdapter{
+    public class MyBaseAdapter extends BaseAdapter {
         Context context;
         LayoutInflater inflater;
 
@@ -198,7 +198,7 @@ public class AttendanceActivity extends AppCompatActivity {
         @Override
         public View getView(final int position, View convertView, ViewGroup parent) {
 
-            LayoutInflater inflater= (LayoutInflater) getLayoutInflater();
+            LayoutInflater inflater=getLayoutInflater();
             View view=inflater.inflate(R.layout.cust_list_attendance, null);
             final StudentInformation std=stdinfo.get(position);
             TextView tv1=(TextView)view.findViewById(R.id.textView12);

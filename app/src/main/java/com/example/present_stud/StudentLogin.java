@@ -55,8 +55,7 @@ public class StudentLogin extends AppCompatActivity {
             public void onComplete(Task<AuthResult> task) {
                 if(task.isSuccessful()){
                     Toast.makeText(getApplicationContext(), "SignIn Successful", Toast.LENGTH_SHORT).show();
-                    Intent intent=new Intent(StudentLogin.this,StudentInformationActivity.class);
-                    intent.putExtra("Name","Email");
+                    Intent intent=new Intent(StudentLogin.this,QrActivity.class);
                     intent.putExtra("Email",email);
                     firebaseAuth.signOut();
                     startActivity(intent);

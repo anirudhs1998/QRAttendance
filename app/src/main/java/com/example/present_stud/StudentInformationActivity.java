@@ -57,7 +57,7 @@ public class StudentInformationActivity extends AppCompatActivity {
                         // Toast.makeText(StudentInformationActivity.this, "Hello bro Again", Toast.LENGTH_SHORT).show();
                         for(DataSnapshot dataSnapshot1 : dataSnapshot.getChildren()){
                             StudentInformation stud1 = dataSnapshot1.getValue(StudentInformation.class);
-                            if(stud1.getRollno().equals(roll))
+                            if(roll.equals(stud1.getRollno()))
                             {
                                 std = stud1;
                             }
